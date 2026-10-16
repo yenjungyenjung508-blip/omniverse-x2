@@ -2,157 +2,332 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080d1b">
-  <title>OMNIVERSE X</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; min-height: 100vh;
-      font-family: system-ui, sans-serif;
-      color: #edf4ff;
-      background: radial-gradient(ellipse at top, #172b50, #080d1b 65%);
-    }
-    header { padding: 30px 20px; text-align: center; }
-    .tag { color: #7de7ff; letter-spacing: 4px; font-size: 12px; }
-    h1 { font-size: clamp(34px, 8vw, 68px); margin: 12px 0; }
-    .subtitle { color: #aabbd6; }
-    main {
-      width: min(1000px, 92%); margin: 0 auto 40px;
-      display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
-      gap: 16px;
-    }
-    section {
-      background: #111c30cc; border: 1px solid #344767;
-      border-radius: 18px; padding: 22px;
-    }
-    h2 { color: #7de7ff; font-size: 18px; }
-    button, input {
-      background: #172944; color: white; border: 1px solid #49688e;
-      border-radius: 9px; padding: 10px; margin: 4px 0;
-    }
-    button { cursor: pointer; }
-    button:hover { background: #25476d; }
-    .value { font-size: 25px; overflow-wrap: anywhere; }
-    canvas { width: 100%; height: 180px; display: block; }
-    footer { text-align: center; padding: 24px; color: #8093b1; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d1b">
+<title>OMNIVERSE X | Science Platform</title>
+<style>
+:root{color-scheme:dark;--bg:#080d1b;--panel:#101b2e;--line:#293c59;--cyan:#75e6ff;--muted:#9baec9}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#142747,var(--bg) 65%);color:#edf5ff;font:15px system-ui,sans-serif}
+header{padding:28px 5%;border-bottom:1px solid var(--line)}
+.eyebrow{color:var(--cyan);letter-spacing:3px;font-size:11px}
+h1{font-size:clamp(30px,6vw,52px);margin:8px 0}
+header p,.muted{color:var(--muted)}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+button,select,input,textarea{background:#15253e;color:#eef6ff;border:1px solid #344d70;border-radius:8px;padding:10px;font:inherit}
+button{cursor:pointer}
+button:hover{border-color:var(--cyan)}
+button.active{background:#17405b;border-color:var(--cyan)}
+main{width:min(1250px,94%);margin:22px auto}
+.panel{background:#0e192bd9;border:1px solid var(--line);border-radius:15px;padding:18px;margin-bottom:16px;min-width:0}
+h2{font-size:19px;margin:0 0 14px;color:var(--cyan)}
+h3{font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:15px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+label{display:block;color:var(--muted);font-size:13px;margin:10px 0 5px}
+input,textarea,select{max-width:100%;width:100%}
+.row input{width:100px}
+.stat{background:#14243b;border-radius:10px;padding:12px;min-width:120px;flex:1}
+.stat strong{display:block;font-size:20px;overflow-wrap:anywhere}
+canvas{width:100%;display:block;border-radius:10px;background:#080f20}
+#space{height:360px}
+#chart{height:210px}
+.page{display:none}.page.active{display:block}
+.matrix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.matrix input{text-align:center;min-width:0}
+.result{white-space:pre-wrap;overflow-wrap:anywhere;background:#091322;padding:12px;border-radius:8px;min-height:42px}
+small{color:var(--muted)}
+footer{text-align:center;color:var(--muted);padding:25px}
+</style>
 </head>
 <body>
-  <header>
-    <div class="tag">MATHEMATICS · PHYSICS · DIMENSIONS</div>
-    <h1>OMNIVERSE X</h1>
-    <p class="subtitle">探索數學、物理與三維宇宙</p>
-  </header>
+<header>
+ <div class="eyebrow">MATHEMATICS · PHYSICS · COMPUTATION</div>
+ <h1>OMNIVERSE X</h1>
+ <p>Interactive scientific laboratory — 數學、物理與計算實驗平台</p>
+ <nav>
+  <button class="active" data-page="home">總覽</button>
+  <button data-page="physics">3D 物理實驗室</button>
+  <button data-page="math">數學實驗室</button>
+  <button data-page="data">研究數據中心</button>
+ </nav>
+</header>
 
-  <main>
-    <section>
-      <h2>數學運算實驗室</h2>
-      <p>計算兩個數字的乘積</p>
-      <input id="a" type="number" value="12.5" step="any" aria-label="第一個數字">
-      <input id="b" type="number" value="8" step="any" aria-label="第二個數字">
-      <p><button id="calculate">計算乘積</button></p>
-      <div class="value" id="answer">100</div>
-    </section>
+<main>
+<section id="home" class="page active">
+ <div class="grid">
+  <div class="panel"><h2>平台狀態</h2>
+   <div class="stat"><strong id="state">READY</strong><small>計算引擎</small></div>
+   <p class="muted">在瀏覽器內執行。無須帳號以外的 API 金鑰或後端伺服器。</p>
+  </div>
+  <div class="panel"><h2>數學速算</h2>
+   <div class="row"><input id="quickA" type="number" value="12.5" step="any" aria-label="第一個數字">
+   <select id="op" aria-label="運算符號"><option value="+">+</option><option value="-">−</option><option value="*">×</option><option value="/">÷</option><option value="^">次方</option></select>
+   <input id="quickB" type="number" value="8" step="any" aria-label="第二個數字"></div>
+   <button id="quickGo">計算</button><div id="quickResult" class="result">100</div>
+  </div>
+ </div>
+ <div class="panel"><h2>研究模組</h2>
+  <div class="grid">
+   <div class="stat"><strong> N-body </strong><small>多天體重力模型</small></div>
+   <div class="stat"><strong> Matrix </strong><small>矩陣與線性代數</small></div>
+   <div class="stat"><strong> CSV </strong><small>實驗資料匯出</small></div>
+  </div>
+ </div>
+</section>
 
-    <section>
-      <h2>三維軌道模擬</h2>
-      <canvas id="space" aria-label="動態軌道示意圖"></canvas>
-      <p id="status">模擬運行中</p>
-      <button id="toggle">暫停 / 繼續</button>
-      <button id="reset">重設</button>
-    </section>
+<section id="physics" class="page">
+ <div class="panel">
+  <h2>多天體重力模擬</h2>
+  <p class="muted">示意採用牛頓萬有引力形式的無因次模型。畫面以三維座標投影顯示，並非真實天文尺度。</p>
+  <canvas id="space" width="1000" height="500"></canvas>
+  <div class="row" style="margin-top:12px">
+   <button id="play">暫停</button><button id="step">單步前進</button><button id="reset">重設</button>
+   <button id="trail">顯示軌跡：開</button>
+  </div>
+  <div class="grid">
+   <div><label for="gravity">重力強度</label><input id="gravity" type="range" min="0" max="3" step=".1" value="1"></div>
+   <div><label for="speed">模擬速度</label><input id="speed" type="range" min=".2" max="3" step=".2" value="1"></div>
+   <div><label for="mass">新增天體質量</label><input id="mass" type="number" min=".1" max="100" step=".1" value="5"></div>
+  </div>
+  <button id="addBody">新增天體</button>
+ </div>
+ <div class="grid">
+  <div class="stat"><small>模擬時間</small><strong id="simTime">0.00</strong></div>
+  <div class="stat"><small>總動能（模型單位）</small><strong id="kinetic">0</strong></div>
+  <div class="stat"><small>總能量（模型單位）</small><strong id="energy">0</strong></div>
+  <div class="stat"><small>天體數量</small><strong id="count">3</strong></div>
+ </div>
+ <div class="panel"><h2>能量歷史</h2><canvas id="chart" width="1000" height="260"></canvas></div>
+</section>
 
-    <section>
-      <h2>物理常數</h2>
-      <p>重力常數 G</p>
-      <div class="value">6.67430 × 10⁻¹¹</div>
-      <p>真空光速 c</p>
-      <div class="value">299,792,458 m/s</div>
-      <p>普朗克常數 h</p>
-      <div class="value">6.62607015 × 10⁻³⁴ J·s</div>
-    </section>
+<section id="math" class="page">
+ <div class="grid">
+  <div class="panel">
+   <h2>3 × 3 矩陣實驗室</h2>
+   <p class="muted">編輯矩陣 A、B，選擇運算。</p>
+   <h3>矩陣 A</h3><div id="matrixA" class="matrix"></div>
+   <h3>矩陣 B</h3><div id="matrixB" class="matrix"></div>
+   <label for="matrixOp">運算</label>
+   <select id="matrixOp">
+    <option value="add">A + B</option><option value="mul">A × B</option>
+    <option value="transpose">A 的轉置</option><option value="det">det(A)</option>
+   </select>
+   <button id="matrixGo">執行運算</button>
+   <div id="matrixResult" class="result"></div>
+  </div>
+  <div class="panel">
+   <h2>聯立方程式求解</h2>
+   <p>求解 Ax = b。輸入方陣 A 與向量 b，系統使用部分選主元的高斯消去法。</p>
+   <label for="linearA">矩陣 A（每列一行，數字以逗號分隔）</label>
+   <textarea id="linearA" rows="4">2,1,-1
+-3,-1,2
+-2,1,2</textarea>
+   <label for="linearB">向量 b（以逗號分隔）</label>
+   <input id="linearB" value="8,-11,-3">
+   <button id="solve">求解</button>
+   <div id="linearResult" class="result"></div>
+  </div>
+ </div>
+ <div class="panel">
+  <h2>高精度常數</h2>
+  <p>π（小數點後 50 位）</p>
+  <div class="result" id="piValue">3.14159265358979323846264338327950288419716939937510</div>
+  <p class="muted">此常數為固定十進位字串；一般 JavaScript Number 計算仍只有約 15–17 位有效數字。後續可再加入任意精度運算引擎。</p>
+ </div>
+</section>
 
-    <section>
-      <h2>高精度數值</h2>
-      <p>計算 π 至小數點後 20 位</p>
-      <button id="pi">顯示 π</button>
-      <div class="value" id="pi-result">3.14159265358979323846</div>
-      <p style="color:#aabbd6;font-size:13px">
-        此數值為 π 的前 20 位小數。
-      </p>
-    </section>
-  </main>
+<section id="data" class="page">
+ <div class="panel">
+  <h2>實驗資料中心</h2>
+  <p>物理模擬會定期記錄時間、總能量與動能。你可以檢視紀錄或匯出 CSV。</p>
+  <div class="row"><button id="export">匯出 CSV</button><button id="clearData">清除紀錄</button></div>
+  <div class="grid" style="margin-top:12px">
+   <div class="stat"><small>紀錄筆數</small><strong id="records">0</strong></div>
+   <div class="stat"><small>目前模擬時間</small><strong id="dataTime">0</strong></div>
+  </div>
+  <div id="dataPreview" class="result">尚無資料</div>
+ </div>
+</section>
+</main>
+<footer>OMNIVERSE X · Browser-based Scientific Platform</footer>
 
-  <footer>OMNIVERSE X · Interactive Science Project</footer>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const fmt=n=>Number.isFinite(n)?Number(n).toPrecision(7):String(n);
+document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{
+ document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x===b));
+ document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===b.dataset.page));
+}));
 
-  <script>
-    const $ = id => document.getElementById(id);
+$("quickGo").onclick=()=>{
+ const a=Number($("quickA").value),b=Number($("quickB").value),op=$("op").value;
+ let r=op==="+"?a+b:op==="-"?a-b:op==="*"?a*b:op==="/"?a/b:a**b;
+ $("quickResult").textContent=Number.isFinite(r)?String(r):"無效結果";
+};
 
-    $("calculate").addEventListener("click", () => {
-      const a = Number($("a").value);
-      const b = Number($("b").value);
-      $("answer").textContent =
-        Number.isFinite(a * b) ? String(a * b) : "無效數值";
-    });
+function makeMatrix(id,values){
+ const root=$(id);root.replaceChildren();
+ values.forEach((v,i)=>{
+  const inp=document.createElement("input");inp.type="number";inp.step="any";inp.value=v;
+  inp.setAttribute("aria-label",id+" 元素 "+(i+1));root.appendChild(inp);
+ });
+}
+const defaultA=[1,2,3,0,1,4,5,6,0],defaultB=[2,0,1,1,3,2,4,1,1];
+makeMatrix("matrixA",defaultA);makeMatrix("matrixB",defaultB);
+const readM=id=>Array.from($(id).querySelectorAll("input"),x=>Number(x.value)).reduce((a,v,i)=>{(a[Math.floor(i/3)]??=[]).push(v);return a},[]);
+function det(m){return m[0][0]*(m[1][1]*m[2][2]-m[1][2]*m[2][1])-m[0][1]*(m[1][0]*m[2][2]-m[1][2]*m[2][0])+m[0][2]*(m[1][0]*m[2][1]-m[1][1]*m[2][0]);}
+$("matrixGo").onclick=()=>{
+ const a=readM("matrixA"),b=readM("matrixB");let r;
+ const op=$("matrixOp").value;
+ if(op==="add")r=a.map((row,i)=>row.map((v,j)=>v+b[i][j]));
+ if(op==="mul")r=a.map((row,i)=>row.map((_,j)=>row.reduce((s,v,k)=>s+v*b[k][j],0)));
+ if(op==="transpose")r=a[0].map((_,j)=>a.map(row=>row[j]));
+ if(op==="det")r=det(a);
+ $("matrixResult").textContent=Array.isArray(r)?r.map(row=>row.map(fmt).join("\t")).join("\n"):fmt(r);
+};
+function parseMatrix(text){
+ const m=text.trim().split(/\n/).map(line=>line.split(/[,\s]+/).filter(Boolean).map(Number));
+ if(!m.length||m.some(row=>row.length!==m.length||row.some(v=>!Number.isFinite(v))))throw Error("矩陣必須是數值方陣，且每列長度相同。");
+ return m;
+}
+function gaussian(A,b){
+ const n=A.length,m=A.map((row,i)=>[...row,b[i]]);
+ for(let k=0;k<n;k++){
+  let p=k;for(let i=k+1;i<n;i++)if(Math.abs(m[i][k])>Math.abs(m[p][k]))p=i;
+  if(Math.abs(m[p][k])<1e-12)throw Error("矩陣奇異或接近奇異，無法求唯一解。");
+  [m[k],m[p]]=[m[p],m[k]];
+  for(let i=k+1;i<n;i++){const f=m[i][k]/m[k][k];for(let j=k;j<=n;j++)m[i][j]-=f*m[k][j];}
+ }
+ const x=Array(n).fill(0);
+ for(let i=n-1;i>=0;i--){let s=m[i][n];for(let j=i+1;j<n;j++)s-=m[i][j]*x[j];x[i]=s/m[i][i];}
+ return x;
+}
+$("solve").onclick=()=>{
+ try{
+  const A=parseMatrix($("linearA").value),b=$("linearB").value.split(/[,\s]+/).filter(Boolean).map(Number);
+  if(b.length!==A.length||b.some(v=>!Number.isFinite(v)))throw Error("向量 b 的數值數量必須等於矩陣列數。");
+  $("linearResult").textContent="x = ["+gaussian(A,b).map(fmt).join(", ")+"]";
+ }catch(e){$("linearResult").textContent="錯誤："+e.message;}
+};
 
-    $("pi").addEventListener("click", () => {
-      $("pi-result").textContent = "3.14159265358979323846";
-    });
-
-    const canvas = $("space");
-    const ctx = canvas.getContext("2d");
-    let angle = 0, running = true;
-
-    function draw() {
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      const dpr = window.devicePixelRatio || 1;
-
-      if (canvas.width !== Math.round(w * dpr) ||
-          canvas.height !== Math.round(h * dpr)) {
-        canvas.width = Math.round(w * dpr);
-        canvas.height = Math.round(h * dpr);
-      }
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, w, h);
-
-      const cx = w / 2, cy = h / 2;
-      ctx.strokeStyle = "#344d70";
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, w * 0.38, h * 0.31, -0.25, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.fillStyle = "#ffe7a3";
-      ctx.beginPath();
-      ctx.arc(cx, cy, 9, 0, Math.PI * 2);
-      ctx.fill();
-
-      const x = cx + Math.cos(angle) * w * 0.38;
-      const y = cy + Math.sin(angle) * h * 0.31;
-      ctx.fillStyle = "#7de7ff";
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, Math.PI * 2);
-      ctx.fill();
-
-      if (running) angle += 0.012;
-      requestAnimationFrame(draw);
-    }
-
-    $("toggle").addEventListener("click", () => {
-      running = !running;
-      $("status").textContent = running ? "模擬運行中" : "模擬已暫停";
-    });
-
-    $("reset").addEventListener("click", () => {
-      angle = 0;
-      running = true;
-      $("status").textContent = "模擬運行中";
-    });
-
-    draw();
-  </script>
+// Dimensionless Newtonian N-body model, using velocity-Verlet integration.
+let bodies=[],running=true,trails=true,t=0,history=[],lastRecord=0;
+const G=1,soft=0.8;
+function resetBodies(){
+ bodies=[
+  {m:100,p:[0,0,0],v:[0,0,0],color:"#ffe7a3",trail:[]},
+  {m:1,p:[65,0,0],v:[0,0.9,0.18],color:"#75e6ff",trail:[]},
+  {m:0.5,p:[-105,0,25],v:[0,-0.67,0.1],color:"#ff91ce",trail:[]}
+ ];t=0;history=[];lastRecord=0;record();
+}
+function acceleration(){
+ return bodies.map((a,i)=>{
+  const out=[0,0,0];
+  bodies.forEach((b,j)=>{if(i===j)return;
+   const d=b.p.map((v,k)=>v-a.p[k]);
+   const r2=d.reduce((s,v)=>s+v*v,soft*soft);
+   const f=G*Number($("gravity").value)*b.m/(r2*Math.sqrt(r2));
+   d.forEach((v,k)=>out[k]+=v*f);
+  });return out;
+ });
+}
+function advance(dt){
+ const acc=acceleration();
+ bodies.forEach((b,i)=>b.p.forEach((v,k)=>b.p[k]+=b.v[k]*dt+.5*acc[i][k]*dt*dt));
+ const next=acceleration();
+ bodies.forEach((b,i)=>b.v.forEach((v,k)=>b.v[k]+=.5*(acc[i][k]+next[i][k])*dt));
+ t+=dt;
+ bodies.forEach(b=>{if(trails){b.trail.push([...b.p]);if(b.trail.length>450)b.trail.shift();}});
+ if(t-lastRecord>.25){record();lastRecord=t;}
+}
+function energy(){
+ let kinetic=0,pot=0,momentum=[0,0,0];
+ bodies.forEach(b=>{kinetic+=.5*b.m*b.v.reduce((s,v)=>s+v*v,0);b.v.forEach((v,k)=>momentum[k]+=b.m*v);});
+ bodies.forEach((a,i)=>bodies.slice(i+1).forEach(b=>{
+  const r=Math.sqrt(a.p.reduce((s,v,k)=>s+(v-b.p[k])**2,soft*soft));
+  pot-=G*Number($("gravity").value)*a.m*b.m/r;
+ }));
+ return {kinetic,total:kinetic+pot,momentum};
+}
+function record(){
+ const e=energy();history.push({time:t,energy:e.total,kinetic:e.kinetic});
+ if(history.length>1500)history.shift();
+}
+function project(p,w,h){
+ const yaw=.65,pitch=.65;
+ const x=p[0]*Math.cos(yaw)-p[2]*Math.sin(yaw);
+ const z=p[0]*Math.sin(yaw)+p[2]*Math.cos(yaw);
+ const y=p[1]*Math.cos(pitch)-z*Math.sin(pitch);
+ const depth=p[1]*Math.sin(pitch)+z*Math.cos(pitch);
+ const scale=Math.min(w,h)*.0031/(1+depth*.0006);
+ return [w/2+x*scale,h/2+y*scale];
+}
+const space=$("space"),ctx=space.getContext("2d");
+function drawSpace(){
+ const w=space.clientWidth||800,h=360,dpr=window.devicePixelRatio||1;
+ if(space.width!==Math.round(w*dpr)||space.height!==Math.round(h*dpr)){space.width=Math.round(w*dpr);space.height=Math.round(h*dpr);}
+ ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+ ctx.strokeStyle="#20334e";ctx.lineWidth=1;
+ for(let i=-4;i<=4;i++){
+  const a=project([i*50,0,-200],w,h),b=project([i*50,0,200],w,h);
+  ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke();
+  const c=project([-200,0,i*50],w,h),d=project([200,0,i*50],w,h);
+  ctx.beginPath();ctx.moveTo(...c);ctx.lineTo(...d);ctx.stroke();
+ }
+ bodies.forEach(b=>{
+  if(trails&&b.trail.length>1){
+   ctx.strokeStyle=b.color+"88";ctx.beginPath();
+   b.trail.forEach((p,i)=>{const q=project(p,w,h);if(i===0)ctx.moveTo(...q);else ctx.lineTo(...q);});ctx.stroke();
+  }
+  const [x,y]=project(b.p,w,h),r=Math.max(3,Math.min(12,3+Math.cbrt(b.m)*1.2));
+  ctx.shadowBlur=14;ctx.shadowColor=b.color;ctx.fillStyle=b.color;
+  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+ });
+ $("simTime").textContent=fmt(t);$("count").textContent=bodies.length;
+ const e=energy();$("kinetic").textContent=fmt(e.kinetic);$("energy").textContent=fmt(e.total);
+ drawChart();
+ requestAnimationFrame(drawSpace);
+}
+function drawChart(){
+ const c=$("chart"),w=c.clientWidth||800,h=210,dpr=window.devicePixelRatio||1;
+ if(c.width!==Math.round(w*dpr)||c.height!==Math.round(h*dpr)){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);}
+ const g=c.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,w,h);
+ if(history.length<2)return;
+ const vals=history.map(x=>x.energy),lo=Math.min(...vals),hi=Math.max(...vals),range=hi-lo||1;
+ g.strokeStyle="#263b58";g.beginPath();g.moveTo(35,10);g.lineTo(35,h-25);g.lineTo(w-10,h-25);g.stroke();
+ g.strokeStyle="#75e6ff";g.beginPath();
+ history.forEach((p,i)=>{const x=35+i/(history.length-1)*(w-50),y=10+(hi-p.energy)/range*(h-40);if(i===0)g.moveTo(x,y);else g.lineTo(x,y);});g.stroke();
+ g.fillStyle="#9baec9";g.font="11px system-ui";g.fillText("總能量",42,18);
+}
+$("play").onclick=()=>{running=!running;$("play").textContent=running?"暫停":"繼續";};
+$("step").onclick=()=>{advance(.01);};
+$("reset").onclick=()=>resetBodies();
+$("trail").onclick=()=>{trails=!trails;$("trail").textContent="顯示軌跡："+(trails?"開":"關");if(!trails)bodies.forEach(b=>b.trail=[]);};
+$("addBody").onclick=()=>{
+ if(bodies.length>=20){alert("此版本最多 20 個天體。");return;}
+ const m=Number($("mass").value);if(!(m>0&&Number.isFinite(m))){alert("請輸入正質量。");return;}
+ const a=Math.random()*Math.PI*2,r=80+Math.random()*90;
+ bodies.push({m,p:[Math.cos(a)*r,(Math.random()-.5)*30,Math.sin(a)*r],v:[-Math.sin(a)*.7,0,Math.cos(a)*.7],color:["#ffb86b","#a5ffbd","#c6a8ff"][bodies.length%3],trail:[]});
+ $("count").textContent=bodies.length;
+};
+function tick(){if(running)advance(.01*Number($("speed").value));requestAnimationFrame(tick);}
+$("export").onclick=()=>{
+ const rows=[["time","total_energy","kinetic_energy"],...history.map(x=>[x.time,x.energy,x.kinetic])];
+ const csv="\uFEFF"+rows.map(row=>row.join(",")).join("\r\n");
+ const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+ const a=document.createElement("a");a.href=url;a.download="omniverse-x-data.csv";a.click();URL.revokeObjectURL(url);
+};
+$("clearData").onclick=()=>{history=[];record();updateData();};
+function updateData(){
+ $("records").textContent=history.length;$("dataTime").textContent=fmt(t);
+ $("dataPreview").textContent=history.slice(-8).map(x=>`t=${fmt(x.time)} | E=${fmt(x.energy)} | K=${fmt(x.kinetic)}`).join("\n")||"尚無資料";
+}
+const oldRecord=record;
+record=function(){oldRecord();updateData();};
+resetBodies();drawSpace();tick();
+</script>
 </body>
 </html>
