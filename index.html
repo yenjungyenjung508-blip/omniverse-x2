@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080d1b">
+  <title>OMNIVERSE X</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      font-family: system-ui, sans-serif;
+      color: #edf4ff;
+      background: radial-gradient(ellipse at top, #172b50, #080d1b 65%);
+    }
+    header { padding: 30px 20px; text-align: center; }
+    .tag { color: #7de7ff; letter-spacing: 4px; font-size: 12px; }
+    h1 { font-size: clamp(34px, 8vw, 68px); margin: 12px 0; }
+    .subtitle { color: #aabbd6; }
+    main {
+      width: min(1000px, 92%); margin: 0 auto 40px;
+      display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+      gap: 16px;
+    }
+    section {
+      background: #111c30cc; border: 1px solid #344767;
+      border-radius: 18px; padding: 22px;
+    }
+    h2 { color: #7de7ff; font-size: 18px; }
+    button, input {
+      background: #172944; color: white; border: 1px solid #49688e;
+      border-radius: 9px; padding: 10px; margin: 4px 0;
+    }
+    button { cursor: pointer; }
+    button:hover { background: #25476d; }
+    .value { font-size: 25px; overflow-wrap: anywhere; }
+    canvas { width: 100%; height: 180px; display: block; }
+    footer { text-align: center; padding: 24px; color: #8093b1; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="tag">MATHEMATICS · PHYSICS · DIMENSIONS</div>
+    <h1>OMNIVERSE X</h1>
+    <p class="subtitle">探索數學、物理與三維宇宙</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>數學運算實驗室</h2>
+      <p>計算兩個數字的乘積</p>
+      <input id="a" type="number" value="12.5" step="any" aria-label="第一個數字">
+      <input id="b" type="number" value="8" step="any" aria-label="第二個數字">
+      <p><button id="calculate">計算乘積</button></p>
+      <div class="value" id="answer">100</div>
+    </section>
+
+    <section>
+      <h2>三維軌道模擬</h2>
+      <canvas id="space" aria-label="動態軌道示意圖"></canvas>
+      <p id="status">模擬運行中</p>
+      <button id="toggle">暫停 / 繼續</button>
+      <button id="reset">重設</button>
+    </section>
+
+    <section>
+      <h2>物理常數</h2>
+      <p>重力常數 G</p>
+      <div class="value">6.67430 × 10⁻¹¹</div>
+      <p>真空光速 c</p>
+      <div class="value">299,792,458 m/s</div>
+      <p>普朗克常數 h</p>
+      <div class="value">6.62607015 × 10⁻³⁴ J·s</div>
+    </section>
+
+    <section>
+      <h2>高精度數值</h2>
+      <p>計算 π 至小數點後 20 位</p>
+      <button id="pi">顯示 π</button>
+      <div class="value" id="pi-result">3.14159265358979323846</div>
+      <p style="color:#aabbd6;font-size:13px">
+        此數值為 π 的前 20 位小數。
+      </p>
+    </section>
+  </main>
+
+  <footer>OMNIVERSE X · Interactive Science Project</footer>
+
+  <script>
+    const $ = id => document.getElementById(id);
+
+    $("calculate").addEventListener("click", () => {
+      const a = Number($("a").value);
+      const b = Number($("b").value);
+      $("answer").textContent =
+        Number.isFinite(a * b) ? String(a * b) : "無效數值";
+    });
+
+    $("pi").addEventListener("click", () => {
+      $("pi-result").textContent = "3.14159265358979323846";
+    });
+
+    const canvas = $("space");
+    const ctx = canvas.getContext("2d");
+    let angle = 0, running = true;
+
+    function draw() {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      const dpr = window.devicePixelRatio || 1;
+
+      if (canvas.width !== Math.round(w * dpr) ||
+          canvas.height !== Math.round(h * dpr)) {
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+      }
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2, cy = h / 2;
+      ctx.strokeStyle = "#344d70";
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, w * 0.38, h * 0.31, -0.25, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffe7a3";
+      ctx.beginPath();
+      ctx.arc(cx, cy, 9, 0, Math.PI * 2);
+      ctx.fill();
+
+      const x = cx + Math.cos(angle) * w * 0.38;
+      const y = cy + Math.sin(angle) * h * 0.31;
+      ctx.fillStyle = "#7de7ff";
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (running) angle += 0.012;
+      requestAnimationFrame(draw);
+    }
+
+    $("toggle").addEventListener("click", () => {
+      running = !running;
+      $("status").textContent = running ? "模擬運行中" : "模擬已暫停";
+    });
+
+    $("reset").addEventListener("click", () => {
+      angle = 0;
+      running = true;
+      $("status").textContent = "模擬運行中";
+    });
+
+    draw();
+  </script>
+</body>
+</html>
